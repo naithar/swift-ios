@@ -24,6 +24,15 @@ import Foundation
 typealias Queue = dispatch_queue_t
 typealias OnceToken = dispatch_once_t
 
+struct CancelableQueue {
+    
+    private var cancelBlock: () -> ()
+    
+    mutating func cancel() {
+        self.cancelBlock()
+    }
+}
+
 enum QueueType {
     
     case Main
@@ -66,17 +75,48 @@ func queue(type: QueueType) -> Queue {
     return queue
 }
 
-func delay(delay: Double,
-           queue: Queue = dispatch_get_main_queue(),
-           closure: () -> ()) {
-    let dispatchDelta = Int64(delay * Double(NSEC_PER_SEC))
-    let dispatchTime = dispatch_time(DISPATCH_TIME_NOW, dispatchDelta)
-    dispatch_after(dispatchTime, queue, closure)
+func async(queue queueType: QueueType = .Main,
+                 after delay: Double = 0,
+                       closure: () -> ()) {
+    
+    let asyncQueue = queue(queueType)
+    if delay == 0 {
+        dispatch_async(asyncQueue, closure)
+    } else {
+        let dispatchDelta = Int64(delay * Double(NSEC_PER_SEC))
+        let dispatchTime = dispatch_time(DISPATCH_TIME_NOW, dispatchDelta)
+        dispatch_after(dispatchTime, asyncQueue, closure)
+    }
 }
 
-func async(queue queue: Queue = dispatch_get_main_queue(),
-                 closure: () -> ()) {
-    dispatch_async(queue, closure)
+func cancelable(queue queueType: QueueType = .Main,
+                      delay: Double = 0,
+                            closure: () -> ()) -> CancelableQueue {
+    
+    let asyncQueue = queue(queueType)
+    var cancelled = false
+    
+    let cancellableQueue = CancelableQueue {
+        cancelled = true
+    }
+    
+    if delay == 0 {
+        dispatch_async(asyncQueue) {
+            if !cancelled {
+                closure()
+            }
+        }
+    } else {
+        let dispatchDelta = Int64(delay * Double(NSEC_PER_SEC))
+        let dispatchTime = dispatch_time(DISPATCH_TIME_NOW, dispatchDelta)
+        dispatch_after(dispatchTime, asyncQueue) {
+            if !cancelled {
+                closure()
+            }
+        }
+    }
+    
+    return cancellableQueue
 }
 
 func once(token: UnsafeMutablePointer<OnceToken>, closure: () -> ()) {
