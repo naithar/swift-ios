@@ -75,16 +75,21 @@ func queue(type: QueueType) -> Queue {
     return queue
 }
 
+func time(delay: Double) -> dispatch_time_t {
+    let dispatchDelta = Int64(delay * Double(NSEC_PER_SEC))
+    let dispatchTime = dispatch_time(DISPATCH_TIME_NOW, dispatchDelta)
+    return dispatchTime
+}
+
 func async(queue queueType: QueueType = .Main,
-                 after delay: Double = 0,
+                 delay: Double = 0,
                        closure: () -> ()) {
     
     let asyncQueue = queue(queueType)
     if delay == 0 {
         dispatch_async(asyncQueue, closure)
     } else {
-        let dispatchDelta = Int64(delay * Double(NSEC_PER_SEC))
-        let dispatchTime = dispatch_time(DISPATCH_TIME_NOW, dispatchDelta)
+        let dispatchTime = time(delay)
         dispatch_after(dispatchTime, asyncQueue, closure)
     }
 }
@@ -107,11 +112,12 @@ func cancelable(queue queueType: QueueType = .Main,
             }
         }
     } else {
-        let dispatchDelta = Int64(delay * Double(NSEC_PER_SEC))
-        let dispatchTime = dispatch_time(DISPATCH_TIME_NOW, dispatchDelta)
+        let dispatchTime = time(delay)
         dispatch_after(dispatchTime, asyncQueue) {
             if !cancelled {
                 closure()
+            } else {
+                NSLog("cancelled")
             }
         }
     }
