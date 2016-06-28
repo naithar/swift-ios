@@ -28,7 +28,7 @@ struct CancelableQueue {
     
     private var cancelBlock: () -> ()
     
-    mutating func cancel() {
+    func cancel() {
         self.cancelBlock()
     }
 }
