@@ -20,28 +20,26 @@
 
 
 infix operator ~> {}
-public func ~> <T> (value: T?,
-                @noescape closure: (inout item: T) -> ()) -> T? {
-    guard var returnValue = value else { return nil }
+public func ~> <T> (value: T,
+                @noescape closure: (inout item: T) -> ()) -> T {
+    var returnValue = value
     closure(item: &returnValue)
     return returnValue
 }
 
-public func ~> <T1, T2> (value: (T1?, T2?),
-                @noescape closure: (inout first: T1, inout second: T2) -> ()) -> (T1?, T2?) {
-    guard var first = value.0,
-        var second = value.1 else { return (nil, nil) }
-
+public func ~> <T1, T2> (value: (T1, T2),
+                @noescape closure: (inout first: T1, inout second: T2) -> ()) -> (T1, T2) {
+    var first = value.0
+    var second = value.1
     closure(first: &first, second: &second)
     return (first, second)
 }
 
-public func ~> <T1, T2, T3> (value: (T1?, T2?, T3?),
-                @noescape closure: (inout first: T1, inout second: T2, inout third: T3) -> ()) -> (T1?, T2?, T3?) {
-    guard var first = value.0,
-        var second = value.1,
-        var third = value.2 else { return (nil, nil, nil) }
-
+public func ~> <T1, T2, T3> (value: (T1, T2, T3),
+                @noescape closure: (inout first: T1, inout second: T2, inout third: T3) -> ()) -> (T1, T2, T3) {
+    var first = value.0
+    var second = value.1
+    var third = value.2
     closure(first: &first, second: &second, third: &third)
     return (first, second, third)
 }
