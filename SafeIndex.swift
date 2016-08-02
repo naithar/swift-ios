@@ -18,27 +18,47 @@
 //  TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
 //  OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+import Foundation
 
-extension MutableCollectionType {
-    
-    subscript (safe index: Index) -> Generator.Element? {
+extension MutableIndexable {
+
+    public subscript(safe index: Index) -> _Element? {
         get {
-            return self.indices.contains(index) ? self[index] : nil
+            return index >= self.startIndex && index < self.endIndex ? self[index] : nil
         }
         set {
-            if let value = newValue
-                where self.indices.contains(index) {
+            if let value = newValue,
+                index >= self.startIndex && index < self.endIndex {
                 self[index] = value
             }
+        }
+        
+    }
+}
+
+extension Indexable {
+
+    public subscript(safe index: Index) -> _Element? {
+        return index >= self.startIndex && index < self.endIndex ? self[index] : nil
+    }
+}
+
+extension OrderedSet {
+    
+    @nonobjc
+    subscript (safe index: Int) -> AnyObject? {
+        get {
+            return self.count > index ? self[index] : nil
         }
     }
 }
 
-extension CollectionType {
+extension NSArray {
     
-    subscript (safe index: Index) -> Generator.Element? {
+    @nonobjc
+    subscript (safe index: Int) -> AnyObject? {
         get {
-            return self.indices.contains(index) ? self[index] : nil
+            return self.count > index ? self[index] : nil
         }
     }
 }
