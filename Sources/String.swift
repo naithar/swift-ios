@@ -23,6 +23,6 @@ import Foundation
 public extension String {
 
     public func localize(table: String? = nil) -> String {
-        return NSLocalizedString(self, tableName: table, bundle: NSBundle.main(), value: "", comment: "")
+        return NSLocalizedString(self, tableName: table, bundle: Bundle.main(), value: "", comment: "")
     }
 }

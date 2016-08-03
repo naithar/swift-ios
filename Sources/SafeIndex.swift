@@ -43,7 +43,7 @@ public extension Indexable {
     }
 }
 
-public extension NSOrderedSet {
+public extension OrderedSet {
 
     @nonobjc
     public subscript (safe index: Int) -> AnyObject? {
