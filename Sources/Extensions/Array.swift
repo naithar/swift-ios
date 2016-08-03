@@ -19,23 +19,33 @@
 //  OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-public extension Dictionary {
+public extension Sequence {
 
-    public mutating func append(_ other: Dictionary) {
-        for (key,value) in other {
-            self.updateValue(value, forKey:key)
+    typealias Value = Iterator.Element
+
+    public func group<U : Hashable>(closure: @noescape (Value) -> U) -> [U : [Value]] {
+        var result: [U: [Value]] = [:]
+        for element in self {
+            let key = closure(element)
+
+            if result[key]?.append(element) == nil {
+                result[key] = [element]
+            }
         }
+        return result
     }
 }
 
-public func + <KeyType, ValueType>(first: Dictionary<KeyType, ValueType>,
-        second: Dictionary<KeyType, ValueType>) -> Dictionary<KeyType, ValueType> {
+public func + <ValueType>(first: Array<ValueType>, second: Array<ValueType>) -> Array<ValueType> {
     var result = first
-    result.append(second)
+    result.append(contentsOf: second)
     return result
 }
 
-public func += <KeyType, ValueType> (first: inout Dictionary<KeyType, ValueType>,
-         second: Dictionary<KeyType, ValueType>) {
-    first.append(second)
+public func += <ValueType>(first: inout Array<ValueType>, second: Array<ValueType>) {
+    first.append(contentsOf: second)
+}
+
+public func += <ValueType>(first: inout Array<ValueType>, value: ValueType) {
+    first.append(value)
 }

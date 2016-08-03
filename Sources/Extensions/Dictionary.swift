@@ -19,29 +19,28 @@
 //  OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-// public extension Sequence {
-//
-//     typealias Value = Generator.Element
-//
-//     public func group<U : Hashable>(@noescape closure: Value -> U) -> [U : [Value]] {
-//         var result: [U: [Value]] = [:]
-//         for element in self {
-//             let key = closure(element)
-//
-//             if result[key]?.append(element) == nil {
-//                 result[key] = [element]
-//             }
-//         }
-//         return result
-//     }
-// }
+public extension Dictionary {
 
-// public func + <ValueType>(first: Sequence<ValueType>, second: Sequence<ValueType>) -> SequenceType<ValueType> {
-//     var result = first
-//     result.append(contentsOf: second)
-//     return result
-// }
-//
-// public func += <ValueType>(first: inout Sequence<ValueType>, second: Sequence<ValueType>) {
-//     first.append(contentsOf: second)
-// }
+    public mutating func append(_ other: Dictionary) {
+        for (key,value) in other {
+            self.updateValue(value, forKey:key)
+        }
+    }
+}
+
+public func + <KeyType, ValueType>(first: Dictionary<KeyType, ValueType>,
+        second: Dictionary<KeyType, ValueType>) -> Dictionary<KeyType, ValueType> {
+    var result = first
+    result.append(second)
+    return result
+}
+
+public func += <KeyType, ValueType> (first: inout Dictionary<KeyType, ValueType>,
+         second: Dictionary<KeyType, ValueType>) {
+    first.append(second)
+}
+
+public func += <KeyType, ValueType> (first: inout Dictionary<KeyType, ValueType>,
+         value: (key: KeyType, value: ValueType?)) {
+    first[value.key] = value.value
+}
