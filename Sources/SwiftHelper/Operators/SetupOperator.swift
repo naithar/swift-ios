@@ -18,8 +18,8 @@
 //  TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
 //  OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-
 infix operator ~> {}
+
 public func ~> <T> (value: T,
                 closure: @noescape (inout item: T) -> ()) -> T {
     var returnValue = value

@@ -18,7 +18,6 @@
 //  TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
 //  OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-
 public extension Dictionary {
 
     public mutating func append(_ other: Dictionary) {
