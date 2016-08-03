@@ -20,9 +20,9 @@
 
 import Foundation
 
-extension String {
-    
-    func localize(table: String? = nil) -> String {
-        return NSLocalizedString(self, tableName: table, bundle: NSBundle.mainBundle(), value: "", comment: "")
+public extension String {
+
+    public func localize(table: String? = nil) -> String {
+        return NSLocalizedString(self, tableName: table, bundle: NSBundle.main(), value: "", comment: "")
     }
 }

@@ -19,33 +19,29 @@
 //  OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-class Lazy<T> {
-    
-    private var valueInitializer: () -> T
-    private var _value: T?
-    
-    var value: T {
-        get {
-            if self._value == nil {
-                self._value = self.valueInitializer()
-            }
-            
-            return self._value!
-        }
-        set {
-            self._value = newValue
-        }
-    }
-    
-    var isEmpty: Bool {
-        return self._value == nil
-    }
-    
-    init(initializer: (() -> T)) {
-        self.valueInitializer = initializer
-    }
-    
-    func reset() {
-        self._value = nil
-    }
-}
+// public extension Sequence {
+//
+//     typealias Value = Generator.Element
+//
+//     public func group<U : Hashable>(@noescape closure: Value -> U) -> [U : [Value]] {
+//         var result: [U: [Value]] = [:]
+//         for element in self {
+//             let key = closure(element)
+//
+//             if result[key]?.append(element) == nil {
+//                 result[key] = [element]
+//             }
+//         }
+//         return result
+//     }
+// }
+
+// public func + <ValueType>(first: Sequence<ValueType>, second: Sequence<ValueType>) -> SequenceType<ValueType> {
+//     var result = first
+//     result.append(contentsOf: second)
+//     return result
+// }
+//
+// public func += <ValueType>(first: inout Sequence<ValueType>, second: Sequence<ValueType>) {
+//     first.append(contentsOf: second)
+// }

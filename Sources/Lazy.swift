@@ -18,47 +18,34 @@
 //  TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
 //  OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import Foundation
 
-extension MutableIndexable {
+public class Lazy<T> {
 
-    public subscript(safe index: Index) -> _Element? {
+    private var valueInitializer: () -> T
+    private var _value: T?
+
+    public var value: T {
         get {
-            return index >= self.startIndex && index < self.endIndex ? self[index] : nil
+            if self._value == nil {
+                self._value = self.valueInitializer()
+            }
+
+            return self._value!
         }
         set {
-            if let value = newValue,
-                index >= self.startIndex && index < self.endIndex {
-                self[index] = value
-            }
-        }
-        
-    }
-}
-
-extension Indexable {
-
-    public subscript(safe index: Index) -> _Element? {
-        return index >= self.startIndex && index < self.endIndex ? self[index] : nil
-    }
-}
-
-extension OrderedSet {
-    
-    @nonobjc
-    subscript (safe index: Int) -> AnyObject? {
-        get {
-            return self.count > index ? self[index] : nil
+            self._value = newValue
         }
     }
-}
 
-extension NSArray {
-    
-    @nonobjc
-    subscript (safe index: Int) -> AnyObject? {
-        get {
-            return self.count > index ? self[index] : nil
-        }
+    public var isEmpty: Bool {
+        return self._value == nil
+    }
+
+    public init(initializer: (() -> T)) {
+        self.valueInitializer = initializer
+    }
+
+    public func reset() {
+        self._value = nil
     }
 }

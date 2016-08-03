@@ -19,15 +19,15 @@
 //  OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-struct Weak<T> {
-    
+public struct Weak<T> {
+
     private weak var _value : AnyObject?
-    
-    var value: T? {
+
+    public var value: T? {
         return self._value as? T
     }
-    
-    init (value: T) {
+
+    public init (value: T) {
         self._value = value as? AnyObject
     }
 }

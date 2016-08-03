@@ -19,24 +19,27 @@
 //  OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-extension Dictionary {
-    
-    mutating func append(other: Dictionary) {
-        for (key,value) in other {
-            self.updateValue(value, forKey:key)
-        }
-    }
+infix operator ~> {}
+public func ~> <T> (value: T,
+                closure: @noescape (inout item: T) -> ()) -> T {
+    var returnValue = value
+    closure(item: &returnValue)
+    return returnValue
 }
 
-func + <KeyType, ValueType>(first: Dictionary<KeyType, ValueType>,
-        second: Dictionary<KeyType, ValueType>) -> Dictionary<KeyType, ValueType> {
-    var result = first
-    result.append(second)
-    return result
+public func ~> <T1, T2> (value: (T1, T2),
+                closure: @noescape (inout first: T1, inout second: T2) -> ()) -> (T1, T2) {
+    var first = value.0
+    var second = value.1
+    closure(first: &first, second: &second)
+    return (first, second)
 }
 
-func += <KeyType, ValueType> (inout first: Dictionary<KeyType, ValueType>,
-         second: Dictionary<KeyType, ValueType>) {
-    first.append(second)
+public func ~> <T1, T2, T3> (value: (T1, T2, T3),
+                closure: @noescape (inout first: T1, inout second: T2, inout third: T3) -> ()) -> (T1, T2, T3) {
+    var first = value.0
+    var second = value.1
+    var third = value.2
+    closure(first: &first, second: &second, third: &third)
+    return (first, second, third)
 }
-

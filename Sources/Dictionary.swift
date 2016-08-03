@@ -19,27 +19,23 @@
 //  OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-infix operator ~> {}
-public func ~> <T> (value: T,
-                @noescape closure: (inout item: T) -> ()) -> T {
-    var returnValue = value
-    closure(item: &returnValue)
-    return returnValue
+public extension Dictionary {
+
+    public mutating func append(_ other: Dictionary) {
+        for (key,value) in other {
+            self.updateValue(value, forKey:key)
+        }
+    }
 }
 
-public func ~> <T1, T2> (value: (T1, T2),
-                @noescape closure: (inout first: T1, inout second: T2) -> ()) -> (T1, T2) {
-    var first = value.0
-    var second = value.1
-    closure(first: &first, second: &second)
-    return (first, second)
+public func + <KeyType, ValueType>(first: Dictionary<KeyType, ValueType>,
+        second: Dictionary<KeyType, ValueType>) -> Dictionary<KeyType, ValueType> {
+    var result = first
+    result.append(second)
+    return result
 }
 
-public func ~> <T1, T2, T3> (value: (T1, T2, T3),
-                @noescape closure: (inout first: T1, inout second: T2, inout third: T3) -> ()) -> (T1, T2, T3) {
-    var first = value.0
-    var second = value.1
-    var third = value.2
-    closure(first: &first, second: &second, third: &third)
-    return (first, second, third)
+public func += <KeyType, ValueType> (first: inout Dictionary<KeyType, ValueType>,
+         second: Dictionary<KeyType, ValueType>) {
+    first.append(second)
 }

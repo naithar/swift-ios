@@ -18,20 +18,47 @@
 //  TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
 //  OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+import Foundation
 
-public extension SequenceType {
-    
-    typealias Value = Generator.Element
-    
-    func group<U : Hashable>(@noescape closure: Value -> U) -> [U : [Value]] {
-        var result: [U: [Value]] = [:]
-        for element in self {
-            let key = closure(element)
-            
-            if result[key]?.append(element) == nil {
-                result[key] = [element]
+public extension MutableIndexable {
+
+    public subscript(safe index: Index) -> _Element? {
+        get {
+            return index >= self.startIndex && index < self.endIndex ? self[index] : nil
+        }
+        set {
+            if let value = newValue
+            where index >= self.startIndex && index < self.endIndex {
+                self[index] = value
             }
         }
-        return result
+
+    }
+}
+
+public extension Indexable {
+
+    public subscript(safe index: Index) -> _Element? {
+        return index >= self.startIndex && index < self.endIndex ? self[index] : nil
+    }
+}
+
+public extension NSOrderedSet {
+
+    @nonobjc
+    public subscript (safe index: Int) -> AnyObject? {
+        get {
+            return self.count > index ? self[index] : nil
+        }
+    }
+}
+
+public extension NSArray {
+
+    @nonobjc
+    public subscript (safe index: Int) -> AnyObject? {
+        get {
+            return self.count > index ? self[index] : nil
+        }
     }
 }
