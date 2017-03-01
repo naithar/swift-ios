@@ -19,8 +19,16 @@
 //  OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 public extension Dictionary {
-
-    public mutating func append(_ other: Dictionary) {
+    
+    public func merged(with other: Dictionary) -> Dictionary {
+        var result = self
+        for (key,value) in other {
+            result.updateValue(value, forKey:key)
+        }
+        return result
+    }
+    
+    public mutating func merge(with other: Dictionary) {
         for (key,value) in other {
             self.updateValue(value, forKey:key)
         }
@@ -28,18 +36,16 @@ public extension Dictionary {
 }
 
 public func + <KeyType, ValueType>(first: Dictionary<KeyType, ValueType>,
-        second: Dictionary<KeyType, ValueType>) -> Dictionary<KeyType, ValueType> {
-    var result = first
-    result.append(second)
-    return result
+               second: Dictionary<KeyType, ValueType>) -> Dictionary<KeyType, ValueType> {
+    return first.merged(with: second)
 }
 
 public func += <KeyType, ValueType> (first: inout Dictionary<KeyType, ValueType>,
-         second: Dictionary<KeyType, ValueType>) {
-    first.append(second)
+                second: Dictionary<KeyType, ValueType>) {
+    first.merge(with: second)
 }
 
 public func += <KeyType, ValueType> (first: inout Dictionary<KeyType, ValueType>,
-         value: (key: KeyType, value: ValueType?)) {
+                value: (key: KeyType, value: ValueType?)) {
     first[value.key] = value.value
 }
